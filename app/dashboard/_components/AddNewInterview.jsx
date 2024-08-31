@@ -18,8 +18,10 @@ import { MockInterview } from "@/utils/models/schema";
 import { v4 as uuidv4 } from "uuid";
 import { useUser } from "@clerk/nextjs";
 import moment from "moment/moment";
+import { useRouter } from "next/navigation";
 
 const AddNewInterview = () => {
+  const router = useRouter();
   const { user } = useUser();
   const [openDialog, setOpenDailog] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -46,7 +48,7 @@ const AddNewInterview = () => {
 
     //SET IN VARIBLE
     setJsonResponse(jsonMockResp);
-    console.log(JSON.parse(jsonMockResp));
+    // console.log(JSON.parse(jsonMockResp));
 
     if (!formData.jobPosition || !formData.jobDesc || !formData.jobExperience) {
       throw new Error(
@@ -63,12 +65,19 @@ const AddNewInterview = () => {
           jobPosition: formData.jobPosition || "",
           jobDesc: formData.jobDesc || "",
           jobExperience: formData.jobExperience || "",
-          createdBy: user?.primaryEmailAddress?.emailAddress || "unknown", 
+          createdBy: user?.primaryEmailAddress?.emailAddress || "unknown",
           createdAt: moment().format("DD-MM-yyyy"),
         })
-        .returning({ mockId: MockInterview.mockId }); 
+        .returning({ mockId: MockInterview.mockId });
 
       console.log("inserted id", response);
+      setFormData({
+        jobPosition: "",
+        jobDesc: "",
+        jobExperience: "",
+      });
+      //navigate to specific id
+      router.push("/dashboard/interview/" + response[0]?.mockId);
     } else {
       console.log("error");
     }
