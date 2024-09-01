@@ -5,8 +5,10 @@ import { db } from "@/utils/db";
 import { MockInterview } from "@/utils/models/schema";
 import { eq } from "drizzle-orm";
 import { Lightbulb, WebcamIcon } from "lucide-react";
+import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import Webcam from "react-webcam";
+
 
 const Interview = ({ params }) => {
   const [interviewData, setInterviewData] = useState(null);
@@ -46,15 +48,15 @@ const Interview = ({ params }) => {
           <div className="flex flex-col p-5 rounded-lg border">
             <h2 className="text-lg">
               <strong>Job Role/Job Positions</strong> :{" "}
-              {interviewData.jobPosition}
+              {interviewData?.jobPosition}
             </h2>
             <h2 className="text-lg">
               <strong>Job Description/Tech stack</strong> :
-              {interviewData.jobDesc}
+              {interviewData?.jobDesc}
             </h2>
             <h2 className="text-lg">
               <strong>Years of experience</strong> :
-              {interviewData.jobExperience}
+              {interviewData?.jobExperience}
             </h2>
           </div>
           <div className="p-5 border rounded-lg border-yellow-300 bg-yellow-50">
@@ -101,7 +103,9 @@ const Interview = ({ params }) => {
         </div>
       </div>
       <div className="flex justify-end items-end w-full">
-        <Button className="">Start Interview</Button>
+        <Link href={`/dashboard/interview/${params.interviewId}/start`}>
+          <Button className="">Start Interview</Button>
+        </Link>
       </div>
     </div>
   );
