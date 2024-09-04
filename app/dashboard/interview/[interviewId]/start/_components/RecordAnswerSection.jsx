@@ -27,6 +27,7 @@ const RecordAnswerSection = ({
     results,
     startSpeechToText,
     stopSpeechToText,
+    setResults,
   } = useSpeechToText({
     continuous: true,
     useLegacyResults: false,
@@ -85,8 +86,10 @@ const RecordAnswerSection = ({
 
     if (response) {
       toast.success("User answer recorded successfully.");
+      setUserAns("");
+      setResults([]);
     }
-    setUserAns("");
+    setResults([]);
     setLoading(false);
   };
 
@@ -123,19 +126,6 @@ const RecordAnswerSection = ({
           "Record Answer"
         )}
       </Button>
-      {/* <Button onClick={() => console.log(userAns)}> Show user answer</Button> */}
-      {/* <div>
-        <h1>Recording: {isRecording.toString()}</h1>
-        <button onClick={isRecording ? stopSpeechToText : startSpeechToText}>
-          {isRecording ? "Stop Recording" : "Start Recording"}
-        </button>
-        <ul>
-          {results.map((result) => (
-            <li key={result.timestamp}>{result.transcript}</li>
-          ))}
-          {interimResult && <li>{interimResult}</li>}
-        </ul>
-      </div> */}
     </div>
   );
 };

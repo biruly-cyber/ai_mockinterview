@@ -19,7 +19,7 @@ const QuestionSection = ({ mockInterViewQuestion, activeQuestionIndex }) => {
               <div key={index}>
                 <h2
                   className={`text-sm md:text-sm py-2 text-center cursor-pointer bg-secondary rounded-full ${
-                    activeQuestionIndex == index && "bg-blue-500 text-white"
+                    activeQuestionIndex == index && "bg-blue-500 text-blue-500"
                   }`}
                 >
                   Question #{index + 1}
