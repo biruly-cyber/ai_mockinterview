@@ -25,12 +25,8 @@ const StartInterview = ({ params }) => {
         .from(MockInterview)
         .where(eq(MockInterview.mockId, params.interviewId));
 
-      console.log(response);
-
-      console.log(mockInterViewQuestion);
       if (response.length > 0) {
         const jsonMockResp = JSON.parse(response[0].jsonMockResp);
-        console.log(jsonMockResp);
         setMockInterViewQuestion(jsonMockResp);
         setInterviewData(response[0]);
       } else {
@@ -44,16 +40,20 @@ const StartInterview = ({ params }) => {
   return (
     <div className="">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+        {/* SHOW THE INTERVIEW QUESTION  */}
         <QuestionSection
           mockInterViewQuestion={mockInterViewQuestion}
           activeQuestionIndex={activeQuestionIndex}
         />
+
+        {/* RECORD ANSWER SECTION */}
         <RecordAnswerSection
           mockInterViewQuestion={mockInterViewQuestion}
           activeQuestionIndex={activeQuestionIndex}
           interviewData={interviewData}
         />
       </div>
+      {/* CONTROLLER SECTION  */}
       <div className="flex justify-end gap-6">
         {activeQuestionIndex > 0 && (
           <Button

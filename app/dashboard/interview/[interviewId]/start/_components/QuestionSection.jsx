@@ -2,6 +2,7 @@ import { Lightbulb, Volume2 } from "lucide-react";
 import React from "react";
 
 const QuestionSection = ({ mockInterViewQuestion, activeQuestionIndex }) => {
+  // text to speech READER SECTION
   const textToSpeech = (text) => {
     if ("speechSynthesis" in window) {
       const speech = new SpeechSynthesisUtterance(text);

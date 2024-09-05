@@ -9,26 +9,24 @@ import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import Webcam from "react-webcam";
 
-
 const Interview = ({ params }) => {
   const [interviewData, setInterviewData] = useState(null);
   const [webcamEnable, setWebcamEnable] = useState(false);
 
+  // GET ID FROM PARAMS
   useEffect(() => {
     if (params.interviewId) {
       getInterviewDetails();
     }
   }, [params.interviewId]);
 
-  // Get interview details
+  // Get interview details FROM DB
   const getInterviewDetails = async () => {
     try {
       const response = await db
         .select()
         .from(MockInterview)
         .where(eq(MockInterview.mockId, params.interviewId));
-
-      console.log(response);
 
       if (response.length > 0) {
         setInterviewData(response[0]);
@@ -72,15 +70,14 @@ const Interview = ({ params }) => {
           </div>
         </div>
         <div className="">
+          {/* //GET PERMISION FOR CAMERA AND microphone */}
           {webcamEnable ? (
             <Webcam
               mirrored={true}
               onUserMedia={() => {
-                console.log("User media granted");
                 setWebcamEnable(true);
               }}
               onUserMediaError={(error) => {
-                console.error("User media error:", error);
                 setWebcamEnable(false);
               }}
               style={{ height: 300, width: 300 }}
@@ -91,7 +88,6 @@ const Interview = ({ params }) => {
               <Button
                 onClick={() => {
                   setWebcamEnable(true);
-                  console.log("clicked");
                 }}
                 variant="ghost"
                 className="mt-5 w-full"

@@ -33,23 +33,21 @@ const RecordAnswerSection = ({
     useLegacyResults: false,
   });
 
+  //SET THE USER ANSWER WHEN USER SPEAKS
   useEffect(() => {
     results.map((result) =>
       setUserAns((prevAns) => prevAns + result?.transcript)
     );
   }, [results]);
 
+  // STORE USER ANSWER ON DATABASE WHEN USER ANSWER IS LONGER THAN 10 AND CHANGE THE ANSWER
   useEffect(() => {
     if (!isRecording && userAns.length > 10) {
       UpdateUserAnswer();
     }
-
-    // if (userAns?.length < 10) {
-    //   toast.error("Error while saving your answer, Please record again");
-    //   return;
-    // }
   }, [userAns]);
 
+  // START RECORDING ANSWER AND STOP RECORDING ANSWER
   const StartStopRecording = async () => {
     if (isRecording) {
       stopSpeechToText();
@@ -58,18 +56,21 @@ const RecordAnswerSection = ({
     }
   };
 
+  // UPDATE USER ANSWER
   const UpdateUserAnswer = async () => {
     setLoading(true);
+    // DYNAMIC ANSWER FOR PROMPTING TO AI FOR COMPARING THE USER ANSWER AND CORRECT ANSWER AND FIGE THEM RATING AND FEEDBACK
     const feedbackPromt = `Question ${mockInterViewQuestion[activeQuestionIndex]?.question},  User answer: ${userAns} Depends on question and user answer for given interview question, please give us rating for answer and feedback as area of improvement if any in just 3 to 5 lines to improve it in JOSN formate with rating and field and feedback field.`;
+    //SEND MESSAGE TO GEMINI AI
     const result = await chatSession.sendMessage(feedbackPromt);
 
+    // GET THE RESPONSE FROM GEMINI AI AND CLEAN UP THE ANSWER
     const mockJsonResp = result.response
       .text()
       .replace("```json", "")
       .replace("```", "");
 
-    console.log(mockJsonResp);
-
+    // PARSE IT IN JSON FORMAT TO GET RATING AND FEEDBACK
     const jsonFeedbackResp = JSON.parse(mockJsonResp);
 
     // store feedback on database
@@ -84,8 +85,10 @@ const RecordAnswerSection = ({
       createdAt: moment().format("DD-MM-yyyy"),
     });
 
+    // FINALY SHOW TOAST MESSAGE TO USER THAT ANSWER IS SUCCESSFULLY STORED
     if (response) {
       toast.success("User answer recorded successfully.");
+      // ANGAIN SET THE VALUE IS EMPTY
       setUserAns("");
       setResults([]);
     }

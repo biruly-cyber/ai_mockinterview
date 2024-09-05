@@ -36,11 +36,14 @@ const AddNewInterview = () => {
   const onSubmit = async (e) => {
     setIsLoading(true);
     e.preventDefault();
-    console.log(formData);
+
+    //dynamic prompt input for gemini ai
     const inputPrompt = `Job Position: ${formData.jobPosition}, Job Description: ${formData.jobDesc}, Year of Experience: ${formData.jobExperience}, Depends on Job Position, Job Description and Years of Experience give us ${process.env.NEXT_PUBLIC_INTERVIEW_QUESTION_COUNT} interview question anlong with Answer in JSON format, Give question and answer as field in JSON`;
 
+    //SEND PROMPT TO GEMINI AI
     const result = await chatSession.sendMessage(inputPrompt);
 
+    // clean the response
     const jsonMockResp = result.response
       .text()
       .replace("```json", "")
@@ -48,14 +51,15 @@ const AddNewInterview = () => {
 
     //SET IN VARIBLE
     setJsonResponse(jsonMockResp);
-    // console.log(JSON.parse(jsonMockResp));
 
+    //validate the data
     if (!formData.jobPosition || !formData.jobDesc || !formData.jobExperience) {
       throw new Error(
         "jobPosition is required and cannot be null or undefined"
       );
     }
 
+    //insert into database
     if (jsonMockResp) {
       const response = await db
         .insert(MockInterview)
@@ -68,15 +72,15 @@ const AddNewInterview = () => {
           createdBy: user?.primaryEmailAddress?.emailAddress || "unknown",
           createdAt: moment().format("DD-MM-yyyy"),
         })
-        .returning({ mockId: MockInterview.mockId });
+        .returning({ mockId: MockInterview.mockId }); //insert data into db and return mockId
 
-      console.log("inserted id", response);
+      //set form data empty
       setFormData({
         jobPosition: "",
         jobDesc: "",
         jobExperience: "",
       });
-      //navigate to specific id
+      //navigate to specific interview
       router.push("/dashboard/interview/" + response[0]?.mockId);
     } else {
       console.log("error");
